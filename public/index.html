@@ -122,8 +122,8 @@
     border:1px solid var(--line);
     background: var(--panel);
     padding: 16px 18px;
-    cursor:pointer;
   }
+  .node-top{ cursor:pointer; }
   .node::before{
     content:"";
     position:absolute;
@@ -282,7 +282,7 @@
     <header style="border-bottom:none; padding:0;">
       <div class="wordmark"><img class="rung" src="https://files.catbox.moe/8t00ct.png" alt="MineLadder logo">MineLadder <span class="beta-tag">BETA</span></div>
       <div class="progress-chip">
-        0 / 40 milestones
+        0 / 15 milestones
         <span class="progress-track"><span class="progress-fill" style="width:0%"></span></span>
       </div>
     </header>
@@ -294,48 +294,69 @@
     <div class="section-label">SURFACE</div>
     <div class="ladder">
 
-      <div class="node active" style="--accent: var(--gold);" onclick="this.classList.toggle('open')">
-        <div class="node-top">
+      <div class="node active" style="--accent: var(--gold);">
+        <div class="node-top" onclick="this.closest('.node').classList.toggle('open')">
           <div class="node-title">First Night Shelter</div>
           <div class="node-status">In progress</div>
         </div>
         <div class="node-detail">
           <p>Survive until dawn without dying. Doesn't need to be pretty.</p>
           <ul class="checklist">
-            <li><input type="checkbox"> Punch enough wood for tools</li>
-            <li><input type="checkbox"> Craft a crafting table + basic tools</li>
-            <li><input type="checkbox"> Wall off or dig in somewhere safe</li>
+            <li><input type="checkbox"> Punch 3-4 logs minimum</li>
+            <li><input type="checkbox"> Craft a crafting table + wooden pickaxe/axe/sword</li>
+            <li><input type="checkbox"> Mine at least 5 cobblestone for a stone pickaxe</li>
+            <li><input type="checkbox"> Wall off, dig into a hillside, or find a natural enclosure</li>
+            <li><input type="checkbox"> Light the area (torches) so nothing spawns near you</li>
           </ul>
         </div>
       </div>
 
-      <div class="node locked" style="--accent: var(--surface);" onclick="this.classList.toggle('open')">
-        <div class="node-top">
+      <div class="node locked" style="--accent: var(--surface);">
+        <div class="node-top" onclick="this.closest('.node').classList.toggle('open')">
           <div class="node-title">Stone Age Toolkit</div>
           <div class="node-status">Locked</div>
         </div>
         <div class="node-detail">
           <p>Upgrade off wood before it slows you down.</p>
           <ul class="checklist">
-            <li><input type="checkbox"> Mine cobblestone, upgrade tools</li>
-            <li><input type="checkbox"> Basic furnace running</li>
+            <li><input type="checkbox"> Full stone tool set (pickaxe, axe, shovel, sword)</li>
+            <li><input type="checkbox"> Basic furnace running, start smelting cobblestone/food</li>
+            <li><input type="checkbox"> Kill a few sheep/cows for wool (bed) and leather</li>
+            <li><input type="checkbox"> Craft a bed and set your spawn point</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="node locked" style="--accent: var(--surface);">
+        <div class="node-top" onclick="this.closest('.node').classList.toggle('open')">
+          <div class="node-title">Early Food Source</div>
+          <div class="node-status">Locked</div>
+        </div>
+        <div class="node-detail">
+          <p>Stop relying on whatever you find lying around before hunger becomes a problem.</p>
+          <ul class="checklist">
+            <li><input type="checkbox"> Find and till a small farm plot near water</li>
+            <li><input type="checkbox"> Plant wheat, carrots, or potatoes (whichever you found first)</li>
+            <li><input type="checkbox"> Fence it off from mobs</li>
+            <li><input type="checkbox"> Optional: pen in 2 cows/sheep to start breeding</li>
           </ul>
         </div>
       </div>
 
       <div class="section-label">IRON AGE</div>
 
-      <div class="node locked" style="--accent: var(--gold);" onclick="this.classList.toggle('open')">
-        <div class="node-top">
-          <div class="node-title">Iron & Food Security</div>
+      <div class="node locked" style="--accent: var(--gold);">
+        <div class="node-top" onclick="this.closest('.node').classList.toggle('open')">
+          <div class="node-title">Iron Gearing Up</div>
           <div class="node-status">Locked</div>
         </div>
         <div class="node-detail">
           <p>The point where dying stops being a constant threat.</p>
           <ul class="checklist">
-            <li><input type="checkbox"> Find iron, smelt a full gear set</li>
-            <li><input type="checkbox"> Start a farm (wheat/carrots minimum)</li>
-            <li><input type="checkbox"> Get a bed, set spawn</li>
+            <li><input type="checkbox"> Mine enough iron for a full tool + armor set</li>
+            <li><input type="checkbox"> Smelt it all, craft iron pickaxe/sword/armor</li>
+            <li><input type="checkbox"> Make a shield</li>
+            <li><input type="checkbox"> Stock a few stacks of torches</li>
           </ul>
           <div class="node-links">
             <a href="#">Minecraft Wiki: Iron Ore ↗</a>
@@ -344,54 +365,169 @@
         </div>
       </div>
 
-      <div class="node locked" style="--accent: var(--lapis);" onclick="this.classList.toggle('open')">
-        <div class="node-top">
-          <div class="node-title">Diamonds & Enchanting</div>
+      <div class="node locked" style="--accent: var(--gold);">
+        <div class="node-top" onclick="this.closest('.node').classList.toggle('open')">
+          <div class="node-title">Redstone Basics</div>
+          <div class="node-status">Locked</div>
+        </div>
+        <div class="node-detail">
+          <p>Not required, but makes everything after this easier. Worth a short detour.</p>
+          <ul class="checklist">
+            <li><input type="checkbox"> Mine redstone dust, understand basic circuits</li>
+            <li><input type="checkbox"> Build a simple door or piston contraption</li>
+            <li><input type="checkbox"> Set up hoppers + a chest for item sorting</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="node locked" style="--accent: var(--lapis);">
+        <div class="node-top" onclick="this.closest('.node').classList.toggle('open')">
+          <div class="node-title">Diamonds & Basic Enchanting</div>
           <div class="node-status">Locked</div>
         </div>
         <div class="node-detail">
           <p>Requires iron gear. Unlocks proper mining and your first enchantments.</p>
           <ul class="checklist">
-            <li><input type="checkbox"> Diamond pickaxe</li>
-            <li><input type="checkbox"> Bookshelf + enchanting table setup</li>
+            <li><input type="checkbox"> Strip-mine or cave-dive at the right Y-level for diamonds</li>
+            <li><input type="checkbox"> Diamond pickaxe (needed for obsidian)</li>
+            <li><input type="checkbox"> Mine obsidian for a portal (needs diamond pickaxe)</li>
+            <li><input type="checkbox"> Build bookshelf + enchanting table setup</li>
+            <li><input type="checkbox"> Enchant your main sword/pickaxe/armor</li>
           </ul>
         </div>
       </div>
 
       <div class="section-label">THE NETHER</div>
 
-      <div class="node locked" style="--accent: var(--redstone);" onclick="this.classList.toggle('open')">
-        <div class="node-top">
-          <div class="node-title">Nether Prep & Fortress</div>
+      <div class="node locked" style="--accent: var(--redstone);">
+        <div class="node-top" onclick="this.closest('.node').classList.toggle('open')">
+          <div class="node-title">Nether Portal & First Steps</div>
           <div class="node-status">Locked</div>
         </div>
         <div class="node-detail">
-          <p>Blaze rods, a fortress run, and enough gear to survive the trip.</p>
+          <p>Getting in safely matters more than what you do once you're there.</p>
+          <ul class="checklist">
+            <li><input type="checkbox"> Build and light your portal in a safe spot</li>
+            <li><input type="checkbox"> Bring fire resistance or a way to deal with lava/ghasts</li>
+            <li><input type="checkbox"> Mark your portal's location so you can find it again</li>
+            <li><input type="checkbox"> Scout cautiously — note nearby fortresses/bastions from a distance</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="node locked" style="--accent: var(--redstone);">
+        <div class="node-top" onclick="this.closest('.node').classList.toggle('open')">
+          <div class="node-title">Fortress Run & Blaze Farm</div>
+          <div class="node-status">Locked</div>
+        </div>
+        <div class="node-detail">
+          <p>Blaze rods are the whole reason you're here — they unlock brewing and Eyes of Ender.</p>
+          <ul class="checklist">
+            <li><input type="checkbox"> Find and clear a path into a Nether Fortress</li>
+            <li><input type="checkbox"> Farm blaze rods (manually or via a simple spawner farm)</li>
+            <li><input type="checkbox"> Grab wither skeleton skulls if going for a Wither later</li>
+          </ul>
           <div class="node-links">
             <a href="#">Chunkbase: Nether Fortress Finder ↗</a>
           </div>
         </div>
       </div>
 
-      <div class="section-label">THE END</div>
-
-      <div class="node locked" style="--accent: var(--ender);" onclick="this.classList.toggle('open')">
-        <div class="node-top">
-          <div class="node-title">Ender Dragon & Elytra</div>
+      <div class="node locked" style="--accent: var(--redstone);">
+        <div class="node-top" onclick="this.closest('.node').classList.toggle('open')">
+          <div class="node-title">Piglin Bartering & Netherite</div>
           <div class="node-status">Locked</div>
         </div>
         <div class="node-detail">
-          <p>Eyes of Ender, End portal, dragon fight, then the outer islands.</p>
+          <p>Optional but strong — netherite is the real endgame gear upgrade.</p>
+          <ul class="checklist">
+            <li><input type="checkbox"> Get gold for piglin bartering (gold farm or mining)</li>
+            <li><input type="checkbox"> Barter for useful loot (ender pearls, obsidian, gravel)</li>
+            <li><input type="checkbox"> Find ancient debris, smelt into netherite scrap</li>
+            <li><input type="checkbox"> Upgrade diamond gear at a smithing table</li>
+          </ul>
         </div>
       </div>
 
-      <div class="node locked" style="--accent: var(--ender);" onclick="this.classList.toggle('open')">
-        <div class="node-top">
-          <div class="node-title">Post-Game Megaprojects</div>
+      <div class="section-label">THE END</div>
+
+      <div class="node locked" style="--accent: var(--ender);">
+        <div class="node-top" onclick="this.closest('.node').classList.toggle('open')">
+          <div class="node-title">End Prep: Eyes of Ender</div>
           <div class="node-status">Locked</div>
         </div>
         <div class="node-detail">
-          <p>Raid farms, mob grinders, mega bases — open-ended, guide-assisted.</p>
+          <p>Finding the stronghold is usually slower than the fight itself.</p>
+          <ul class="checklist">
+            <li><input type="checkbox"> Craft enough Eyes of Ender (blaze powder + ender pearls)</li>
+            <li><input type="checkbox"> Throw eyes to triangulate the stronghold</li>
+            <li><input type="checkbox"> Find the portal room, don't activate it yet if not ready</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="node locked" style="--accent: var(--ender);">
+        <div class="node-top" onclick="this.closest('.node').classList.toggle('open')">
+          <div class="node-title">Ender Dragon Fight</div>
+          <div class="node-status">Locked</div>
+        </div>
+        <div class="node-detail">
+          <p>Bring more than you think you need — this is the first real boss fight.</p>
+          <ul class="checklist">
+            <li><input type="checkbox"> Bring beds (for damage), arrows, and healing (golden apples/potions)</li>
+            <li><input type="checkbox"> Destroy end crystals on obsidian towers first</li>
+            <li><input type="checkbox"> Fight the dragon, grab the egg + exit portal</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="node locked" style="--accent: var(--ender);">
+        <div class="node-top" onclick="this.closest('.node').classList.toggle('open')">
+          <div class="node-title">Elytra & Outer End Islands</div>
+          <div class="node-status">Locked</div>
+        </div>
+        <div class="node-detail">
+          <p>Elytra changes how you move around the whole world from here on.</p>
+          <ul class="checklist">
+            <li><input type="checkbox"> Bridge or find a way to the outer End islands</li>
+            <li><input type="checkbox"> Find an End City and loot an Elytra from the item frame</li>
+            <li><input type="checkbox"> Grab shulker boxes for portable storage</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-label">POST-GAME</div>
+
+      <div class="node locked" style="--accent: var(--ender);">
+        <div class="node-top" onclick="this.closest('.node').classList.toggle('open')">
+          <div class="node-title">Automated Farms</div>
+          <div class="node-status">Locked</div>
+        </div>
+        <div class="node-detail">
+          <p>Redstone-driven farms that remove grinding from the rest of the game.</p>
+          <ul class="checklist">
+            <li><input type="checkbox"> Build an iron farm</li>
+            <li><input type="checkbox"> Build a villager-based raid or trading farm</li>
+            <li><input type="checkbox"> Build a mob XP farm (general or specific mob)</li>
+          </ul>
+          <div class="node-links">
+            <a href="#">Ask the guide to break one of these down</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="node locked" style="--accent: var(--ender);">
+        <div class="node-top" onclick="this.closest('.node').classList.toggle('open')">
+          <div class="node-title">Mega Builds & Exploration Goals</div>
+          <div class="node-status">Locked</div>
+        </div>
+        <div class="node-detail">
+          <p>Open-ended, guide-assisted — whatever you actually want your world to be.</p>
+          <ul class="checklist">
+            <li><input type="checkbox"> Pick a base theme/style and start a mega build</li>
+            <li><input type="checkbox"> Explore for an Ancient City or Trial Chambers</li>
+            <li><input type="checkbox"> Set a personal long-term project (map art, full survival guide, etc.)</li>
+          </ul>
         </div>
       </div>
 
