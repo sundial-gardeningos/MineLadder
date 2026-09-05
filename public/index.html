@@ -1,1 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MineLadder — Beta</title>
+<link rel="icon" href="https://files.catbox.moe/8t00ct.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #201d1a;
+    --bg-2: #29241f;
+    --panel: #2c2620;
+    --line: #46392c;
+    --ink: #efe6d8;
+    --ink-dim: #b9ab97;
+    --ink-faint: #85786a;
 
+    --surface: #d8cdb8;
+    --emerald: #3fae6a;
+    --lapis: #3a6ea8;
+    --ender: #7c5cbf;
+    --redstone: #b23b3b;
+    --gold: #c99a3d;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,h3,.display{
+    font-family:'Space Grotesk', sans-serif;
+    margin:0;
+  }
+
+  /* ---------- layout shell ---------- */
+  .app{
+    display:grid;
+    grid-template-columns: 1fr 360px;
+    min-height:100vh;
+  }
+  @media (max-width: 880px){
+    .app{ grid-template-columns: 1fr; }
+    .sidebar{ order:2; border-left:none; border-top:1px solid var(--line); }
+    .main{ order:1; }
+  }
+
+  /* ---------- header ---------- */
+  header{
+    padding: 28px clamp(20px, 5vw, 56px) 20px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .wordmark{
+    font-size: 1.5rem;
+    font-weight:700;
+    letter-spacing:-0.02em;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .wordmark .rung{
+    display:inline-block;
+    width:32px; height:32px;
+    flex:none;
+    object-fit:contain;
+    image-rendering: pixelated;
+  }
+  .progress-chip{
+    font-size:0.85rem;
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .progress-track{
+    width:120px; height:6px;
+    background:var(--line);
+    position:relative;
+  }
+  .progress-fill{
+    position:absolute; left:0; top:0; bottom:0;
+    width:35%;
+    background:var(--emerald);
+  }
+
+  /* ---------- main / ladder ---------- */
+  .main{ padding: 8px clamp(20px, 5vw, 56px) 80px; position:relative; }
+
+  .intro{
+    max-width:520px;
+    padding: 28px 0 8px;
+  }
+  .intro p{ color:var(--ink-dim); font-size:0.95rem; }
+
+  .ladder{
+    position:relative;
+    padding-left: 34px;
+    margin-top: 20px;
+  }
+  .ladder::before{
+    content:"";
+    position:absolute;
+    left:11px; top:6px; bottom:6px;
+    width:2px;
+    background: linear-gradient(to bottom, var(--surface), var(--lapis) 35%, var(--redstone) 65%, var(--ender));
+    opacity:0.5;
+  }
+
+  .node{
+    position:relative;
+    margin-bottom: 14px;
+    border:1px solid var(--line);
+    background: var(--panel);
+    padding: 16px 18px;
+    cursor:pointer;
+  }
+  .node::before{
+    content:"";
+    position:absolute;
+    left:-27px; top:22px;
+    width:12px; height:12px;
+    border-radius:50%;
+    background: var(--bg);
+    border:2px solid var(--accent, var(--ink-faint));
+  }
+  .node.done::before{ background: var(--accent, var(--emerald)); }
+  .node.active{ border-color: var(--accent, var(--gold)); }
+  .node.locked{ opacity:0.55; }
+
+  .node-top{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+  }
+  .node-title{ font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:1.02rem; }
+  .node-status{
+    font-size:0.72rem;
+    color: var(--ink-faint);
+    white-space:nowrap;
+  }
+  .node.done .node-status{ color:var(--emerald); }
+  .node.active .node-status{ color:var(--gold); }
+
+  .node-detail{
+    display:none;
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px dashed var(--line);
+    font-size:0.9rem;
+    color:var(--ink-dim);
+  }
+  .node.open .node-detail{ display:block; }
+
+  .checklist{ list-style:none; padding:0; margin:10px 0 0; }
+  .checklist li{
+    display:flex; align-items:flex-start; gap:8px;
+    padding:5px 0;
+    font-size:0.88rem;
+  }
+  .checklist input{ margin-top:3px; accent-color: var(--emerald); }
+
+  .node-links{ margin-top:10px; display:flex; gap:14px; flex-wrap:wrap; }
+  .node-links a{
+    font-size:0.78rem;
+    color: var(--lapis);
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+  }
+  .node-links a:hover{ border-bottom-color: var(--lapis); }
+
+  .section-label{
+    font-size:0.72rem;
+    color: var(--ink-faint);
+    margin: 30px 0 10px 34px;
+  }
+
+  /* ---------- sidebar ---------- */
+  .sidebar{
+    border-left:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+    background: var(--bg-2);
+    min-height:100vh;
+  }
+  .sidebar-head{
+    padding: 22px 20px 14px;
+    border-bottom:1px solid var(--line);
+  }
+  .sidebar-head h2{ font-size:1rem; font-weight:600; }
+  .sidebar-head p{ margin:4px 0 0; font-size:0.8rem; color:var(--ink-faint); }
+
+  .chat{
+    flex:1;
+    padding: 16px 18px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    max-height: 68vh;
+  }
+  .msg{ max-width:92%; font-size:0.88rem; }
+  .msg.guide{ align-self:flex-start; }
+  .msg.you{ align-self:flex-end; text-align:right; }
+  .msg .bubble{
+    display:inline-block;
+    padding:10px 13px;
+    border:1px solid var(--line);
+  }
+  .msg.guide .bubble{ background: var(--panel); border-left:2px solid var(--lapis); }
+  .msg.you .bubble{ background: #35302a; }
+
+  .breakdown{
+    border:1px solid var(--line);
+    background: var(--panel);
+    padding:14px;
+    font-size:0.85rem;
+    margin-top:6px;
+  }
+  .breakdown h4{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:0.92rem;
+    margin:0 0 8px;
+    color: var(--gold);
+  }
+  .breakdown ol{ margin:6px 0 0; padding-left:18px; }
+  .breakdown li{ margin-bottom:6px; color:var(--ink-dim); }
+  .breakdown .mats{ font-size:0.8rem; color:var(--ink-faint); margin-top:8px; }
+
+  .chat-input{
+    display:flex;
+    gap:8px;
+    padding: 14px 16px 20px;
+    border-top:1px solid var(--line);
+  }
+  .chat-input input{
+    flex:1;
+    background: var(--panel);
+    border:1px solid var(--line);
+    color: var(--ink);
+    padding:10px 12px;
+    font-family:'Work Sans',sans-serif;
+    font-size:0.88rem;
+  }
+  .chat-input input:focus{ outline:1px solid var(--gold); }
+  .chat-input button{
+    background: var(--gold);
+    color: #201d1a;
+    border:none;
+    padding: 0 16px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:0.85rem;
+    cursor:pointer;
+  }
+  .chat-input button:hover{ filter:brightness(1.08); }
+
+  .beta-tag{
+    font-size:0.68rem;
+    color: var(--bg);
+    background: var(--gold);
+    padding:2px 7px;
+    letter-spacing:0.02em;
+    align-self:center;
+  }
+
+  ::-webkit-scrollbar{ width:8px; }
+  ::-webkit-scrollbar-thumb{ background: var(--line); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="main">
+    <header style="border-bottom:none; padding:0;">
+      <div class="wordmark"><img class="rung" src="https://files.catbox.moe/8t00ct.png" alt="MineLadder logo">MineLadder <span class="beta-tag">BETA</span></div>
+      <div class="progress-chip">
+        0 / 40 milestones
+        <span class="progress-track"><span class="progress-fill" style="width:0%"></span></span>
+      </div>
+    </header>
+
+    <div class="intro">
+      <p>Your route down through a Java survival world — from first punch to the End and beyond. Click a rung to see what it takes.</p>
+    </div>
+
+    <div class="section-label">SURFACE</div>
+    <div class="ladder">
+
+      <div class="node active" style="--accent: var(--gold);" onclick="this.classList.toggle('open')">
+        <div class="node-top">
+          <div class="node-title">First Night Shelter</div>
+          <div class="node-status">In progress</div>
+        </div>
+        <div class="node-detail">
+          <p>Survive until dawn without dying. Doesn't need to be pretty.</p>
+          <ul class="checklist">
+            <li><input type="checkbox"> Punch enough wood for tools</li>
+            <li><input type="checkbox"> Craft a crafting table + basic tools</li>
+            <li><input type="checkbox"> Wall off or dig in somewhere safe</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="node locked" style="--accent: var(--surface);" onclick="this.classList.toggle('open')">
+        <div class="node-top">
+          <div class="node-title">Stone Age Toolkit</div>
+          <div class="node-status">Locked</div>
+        </div>
+        <div class="node-detail">
+          <p>Upgrade off wood before it slows you down.</p>
+          <ul class="checklist">
+            <li><input type="checkbox"> Mine cobblestone, upgrade tools</li>
+            <li><input type="checkbox"> Basic furnace running</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-label">IRON AGE</div>
+
+      <div class="node locked" style="--accent: var(--gold);" onclick="this.classList.toggle('open')">
+        <div class="node-top">
+          <div class="node-title">Iron & Food Security</div>
+          <div class="node-status">Locked</div>
+        </div>
+        <div class="node-detail">
+          <p>The point where dying stops being a constant threat.</p>
+          <ul class="checklist">
+            <li><input type="checkbox"> Find iron, smelt a full gear set</li>
+            <li><input type="checkbox"> Start a farm (wheat/carrots minimum)</li>
+            <li><input type="checkbox"> Get a bed, set spawn</li>
+          </ul>
+          <div class="node-links">
+            <a href="#">Minecraft Wiki: Iron Ore ↗</a>
+            <a href="#">Ask the guide about farm layouts</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="node locked" style="--accent: var(--lapis);" onclick="this.classList.toggle('open')">
+        <div class="node-top">
+          <div class="node-title">Diamonds & Enchanting</div>
+          <div class="node-status">Locked</div>
+        </div>
+        <div class="node-detail">
+          <p>Requires iron gear. Unlocks proper mining and your first enchantments.</p>
+          <ul class="checklist">
+            <li><input type="checkbox"> Diamond pickaxe</li>
+            <li><input type="checkbox"> Bookshelf + enchanting table setup</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-label">THE NETHER</div>
+
+      <div class="node locked" style="--accent: var(--redstone);" onclick="this.classList.toggle('open')">
+        <div class="node-top">
+          <div class="node-title">Nether Prep & Fortress</div>
+          <div class="node-status">Locked</div>
+        </div>
+        <div class="node-detail">
+          <p>Blaze rods, a fortress run, and enough gear to survive the trip.</p>
+          <div class="node-links">
+            <a href="#">Chunkbase: Nether Fortress Finder ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">THE END</div>
+
+      <div class="node locked" style="--accent: var(--ender);" onclick="this.classList.toggle('open')">
+        <div class="node-top">
+          <div class="node-title">Ender Dragon & Elytra</div>
+          <div class="node-status">Locked</div>
+        </div>
+        <div class="node-detail">
+          <p>Eyes of Ender, End portal, dragon fight, then the outer islands.</p>
+        </div>
+      </div>
+
+      <div class="node locked" style="--accent: var(--ender);" onclick="this.classList.toggle('open')">
+        <div class="node-top">
+          <div class="node-title">Post-Game Megaprojects</div>
+          <div class="node-status">Locked</div>
+        </div>
+        <div class="node-detail">
+          <p>Raid farms, mob grinders, mega bases — open-ended, guide-assisted.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-head">
+      <h2>Guide</h2>
+      <p>Knows where you are on the ladder. Ask it anything.</p>
+    </div>
+
+    <div class="chat" id="chat">
+      <div class="msg guide">
+        <div class="bubble">Ask me anything about your world — what to build next, how a farm works, whatever you're stuck on.</div>
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <input id="chatInput" type="text" placeholder="Ask the guide...">
+      <button onclick="sendMsg()">Send</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Same-origin now that server.js serves this file — no full URL needed.
+const BACKEND_URL = "/api/chat";
+
+// Demo player state — replace with real saved progress once accounts exist.
+const playerState = {
+  version: "1.21",
+  done: [],
+  active: "First Night Shelter",
+};
+
+let conversation = [];
+
+function addBubble(role, text){
+  const chat = document.getElementById('chat');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ' + (role === 'user' ? 'you' : 'guide');
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.textContent = text;
+  wrap.appendChild(bubble);
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+  return wrap;
+}
+
+function renderBreakdownIfPresent(wrapEl, rawText){
+  const match = rawText.match(/```json\s*([\s\S]*?)```/);
+  if(!match) return false;
+  try {
+    const data = JSON.parse(match[1]);
+    const lead = rawText.slice(0, match.index).trim();
+    if(lead){
+      wrapEl.querySelector('.bubble').textContent = lead;
+    } else {
+      wrapEl.querySelector('.bubble').remove();
+    }
+    const box = document.createElement('div');
+    box.className = 'breakdown';
+    box.innerHTML = `<h4>${data.title || 'Breakdown'}</h4>
+      <ol>${(data.steps||[]).map(s => `<li><strong>${s.title}</strong> — ${s.detail}</li>`).join('')}</ol>
+      <div class="mats">Materials: ${(data.materials||[]).map(m => `${m.quantity} ${m.item}`).join(', ')}</div>`;
+    wrapEl.appendChild(box);
+    return true;
+  } catch(e){
+    return false;
+  }
+}
+
+async function sendMsg(){
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+
+  addBubble('user', text);
+  conversation.push({ role: 'user', content: text });
+
+  const thinkingWrap = addBubble('assistant', 'Thinking…');
+
+  try {
+    const res = await fetch(BACKEND_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ history: conversation, playerState }),
+    });
+    const data = await res.json();
+
+    if(!res.ok){
+      thinkingWrap.querySelector('.bubble').textContent = data.error || 'The guide is unavailable right now.';
+      return;
+    }
+
+    conversation.push({ role: 'assistant', content: data.reply });
+    thinkingWrap.querySelector('.bubble').textContent = data.reply;
+    renderBreakdownIfPresent(thinkingWrap, data.reply);
+  } catch (err){
+    thinkingWrap.querySelector('.bubble').textContent = 'Could not reach the backend — is it running?';
+  }
+}
+
+document.getElementById('chatInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') sendMsg();
+});
+</script>
+
+</body>
+</html>
